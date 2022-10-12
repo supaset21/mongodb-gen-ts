@@ -57,19 +57,8 @@ async function main() {
     str += "}\n";
     str += `\nexport default ${interfaceName}`;
 
-    fs.writeFileSync(`${interfaceName}.d.ts`, str);
+    fs.writeFileSync(`ts/${interfaceName}.d.ts`, str);
   }
-
-  // const collection = db.collection("matches");
-  // const filteredDocs = await collection.find({}).limit(1).toArray();
-  // todo gen interface
-  // const interfaceName = "IMatches";
-  // let str = `interface TMatches {\n`;
-  // str += addString(filteredDocs[0]);
-  // str += "}\n";
-  // str += `\nexport default ${interfaceName}`;
-
-  // fs.writeFileSync("IMatches.d.ts", str);
 
   console.log("Connected successfully to server");
 
