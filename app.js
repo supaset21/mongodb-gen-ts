@@ -22,7 +22,7 @@ const addString = (filteredDocs) => {
     } else {
       if (type == "object") {
         if (Array.isArray(data)) {
-          // console.log(data);
+          str += `${key} : []\n`;
         } else {
           if (data) {
             str += `${key} : {\n`;
