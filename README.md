@@ -17,3 +17,5 @@ Run with command
 ```sh
 node app.js
 ```
+
+After does it can see ts interface file in dir ./ts
