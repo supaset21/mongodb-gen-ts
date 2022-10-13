@@ -5,6 +5,10 @@ require("dotenv").config();
 // Connection URL
 const client = new MongoClient(process.env.MONGO_DB_URL);
 
+const isObjectEmpty = (obj) => {
+  return Object.keys(obj).length === 0;
+};
+
 const capitalizeFirstLetter = (str) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
@@ -15,9 +19,15 @@ const getTypeString = (data, str, key) => {
   const type = typeof data;
   if (type == "object") {
     if (Array.isArray(data)) {
-      str += `${key} : any[]\n`;
+      str += `${key} : any[] // todo will fix it\n`;
     } else {
-      if (data) str += `${key} : {\n ${addString(data)} }\n`;
+      if (data) {
+        if (isObjectEmpty(data)) {
+          str += `${key} : any //todo will fix it\n`;
+        } else {
+          str += `${key} : {\n ${addString(data)} }\n`;
+        }
+      }
     }
   } else {
     str += `${key} : ${type}\n`;
