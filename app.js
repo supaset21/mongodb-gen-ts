@@ -11,29 +11,30 @@ const capitalizeFirstLetter = (str) => {
 
 const fs = require("fs");
 
+const getTypeString = (data, str, key) => {
+  const type = typeof data;
+  if (type == "object") {
+    if (Array.isArray(data)) {
+      str += `${key} : any[]\n`;
+    } else {
+      if (data) str += `${key} : {\n ${addString(data)} }\n`;
+    }
+  } else {
+    str += `${key} : ${type}\n`;
+  }
+  return str;
+};
+
 const addString = (filteredDocs) => {
   /* Start */
   let str = "";
   for (const key in filteredDocs) {
-    const data = filteredDocs[key];
-    const type = typeof filteredDocs[key];
-    if (key == "createdAt" || key == "updatedAt") {
-      str += `${key} : Date\n`;
-    } else {
-      if (type == "object") {
-        if (Array.isArray(data)) {
-          str += `${key} : []\n`;
-        } else {
-          if (data) {
-            str += `${key} : {\n`;
-            for (const key2 in data) {
-              str += `${key2} : ${typeof data[key2]}\n`;
-            }
-            str += `}\n`;
-          }
-        }
+    if (key != "_id") {
+      const data = filteredDocs[key];
+      if (key == "createdAt" || key == "updatedAt") {
+        str += `${key} : Date\n`;
       } else {
-        str += `${key} : ${type}\n`;
+        str = getTypeString(data, str, key);
       }
     }
   }
@@ -52,12 +53,12 @@ async function main() {
     const filteredDocs = await collection.find({}).limit(1).toArray();
 
     const interfaceName = `I${capitalizeFirstLetter(collectionName)}`;
-    let str = `interface ${interfaceName} {\n`;
-    str += addString(filteredDocs[0]);
-    str += "}\n";
+    console.log(`Init generate ${interfaceName}...`);
+    let str = `interface ${interfaceName} {\n ${addString(filteredDocs[0])} }`;
     str += `\nexport default ${interfaceName}`;
 
     fs.writeFileSync(`ts/${interfaceName}.d.ts`, str);
+    console.log(`Generate ${interfaceName} complete.`);
   }
 
   console.log("Connected successfully to server");
